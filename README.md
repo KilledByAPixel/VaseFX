@@ -37,14 +37,3 @@ Minting/sculpting controls from the source:
 - G: generate random
 
 ![Examples](examples.gif)
-
-## License
-
-This project is licensed under the GNU General Public License v3.0 or later.
-
-- Full text: see LICENSE
-- SPDX identifier: GPL-3.0-or-later
-
-## Notes
-
-- Third-party notices are listed in `THIRD_PARTY_NOTICES.md`.
