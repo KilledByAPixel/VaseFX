@@ -1,0 +1,16 @@
+{
+  "name": "vasefx",
+  "version": "2.21.0",
+  "private": true,
+  "description": "VaseFX - WebGL vase sculpting tool",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "build": "build.bat",
+    "dev": "npx http-server . -p 8080 -c-1"
+  },
+  "devDependencies": {
+    "google-closure-compiler": "^20240317.0.0",
+    "http-server": "^14.1.1",
+    "uglify-js": "^3.19.3"
+  }
+}
