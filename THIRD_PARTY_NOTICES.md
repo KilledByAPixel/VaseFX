@@ -4,13 +4,13 @@ This repository includes third-party software.
 
 ## Included files
 
-- `download.js`
+- `code/download.js`
   - Header attribution: download.js v3.0 by dandavis
   - Header note: CCBY2 and project URL in file header
-- `gif.js` and `gif.worker.js`
+- `code/gif.js` and `code/gif.worker.js`
   - Header attribution: gif.js 0.1.6
   - Upstream: https://github.com/jnordberg/gif.js
-- `CCapture.min.js`
+- `code/CCapture.min.js`
   - Bundled/minified third-party capture library
   - Upstream: https://github.com/spite/ccapture.js
 

@@ -1,59 +1,16 @@
 # VaseFX
 
-VaseFX is a WebGL vase sculpting tool by Frank Force.
+VaseFX is a browser-based vase sculpting tool by Frank Force.
 
-Sculpt, glaze, and render procedural pottery directly in the browser.
+Sculpt, glaze, and render procedural pottery directly in your browser.
 
-## License
+## How To Use
 
-This project is licensed under the GNU General Public License v3.0 or later.
-
-- Full text: see LICENSE
-- SPDX identifier: GPL-3.0-or-later
-
-## Features
-
-- Interactive sculpting with mouse/touch input
-- Undo/redo workflow for shape iteration
-- Multiple material and background effects
-- Frame/export controls for still image and animation workflows
-- Standalone browser build with no backend dependency
-
-## Project Layout
-
-- `index.html` - dev entry page
-- `header.html` - html/script header used by build process
-- `game.js` - application logic and controls
-- `scene.js`, `shader.js`, `webgl.js` - render stack
-- `input.js` - interaction and controls
-- `utils.js` - shared helpers
-- `build.bat` - minified release build pipeline
-
-## Quick Start (Development)
-
-1. Serve the repository with a local static server.
-2. Open `index.html` through that server.
-
-Example using Node.js:
-
-```powershell
-npm install
-npm run dev
-```
-
-Then open http://localhost:8080
-
-## Build (Release)
-
-```powershell
-npm run build
-```
-
-This runs `build.bat`, minifies the source, and writes output to `build/index.html`.
+- Open the app in your browser.
+- Sculpt with mouse or touch.
+- Export your image when you are happy with the result.
 
 ## Controls
-
-Standalone controls from the source:
 
 - Mouse or touch: control view
 - 1: save image
@@ -75,16 +32,13 @@ Minting/sculpting controls from the source:
 - R: reset
 - G: generate random
 
-## Open Source Publishing Notes
+## License
 
-- Keep all third-party notices in `THIRD_PARTY_NOTICES.md`.
-- Keep source files in the repository for GPL compliance.
-- Include GPL license text in redistributions.
+This project is licensed under the GNU General Public License v3.0 or later.
 
-## Contributing
+- Full text: see LICENSE
+- SPDX identifier: GPL-3.0-or-later
 
-Contributions are welcome. Please read:
+## Notes
 
-- `CONTRIBUTING.md`
-- `CODE_OF_CONDUCT.md`
-- `SECURITY.md`
+- Third-party notices are listed in `THIRD_PARTY_NOTICES.md`.
