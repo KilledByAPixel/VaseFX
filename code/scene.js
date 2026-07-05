@@ -136,9 +136,6 @@ class Vase
             this.angleVelocity = 0;
             needsEmit = 1;
         }
-
-        if (capturer)
-            this.angle = 2*PI* captureFrame / captureFrameCount;
     }
 
     applyLimits(i=0)

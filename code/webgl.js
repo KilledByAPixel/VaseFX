@@ -345,8 +345,7 @@ function glRender()
     setUniform4f('sceneEffects', sceneTypeID,sceneScale,sceneRoundness,postEffectID);
 
     let filmGrain;
-    if (capturer)         filmGrain = 0;
-    else if (postEffectID==0) filmGrain = 0;       // None — no grain
+    if (postEffectID==0)      filmGrain = 0;       // None — no grain
     else if (postEffectID==2) filmGrain = .25;     // Extra Grain
     else if (postEffectID==5) filmGrain = .3;      // Color Grain
     else                      filmGrain = .1;      // Grain (default) + Invert/Border/Vignette/Grayscale

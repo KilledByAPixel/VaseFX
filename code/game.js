@@ -91,12 +91,8 @@ let testDisplayTimer;
 let sculptPos = vec3();
 let sculptSize = 0;
 
-const captureSize = 600;
-const captureFrameCount = 120;
 let canvasSize = 800;
 
-let capturer;
-let captureFrame;
 let isSculpting;
 let needsEmit;
 
@@ -375,7 +371,6 @@ function initParams()
         mkBtn('Save Vase', () => saveVaseToFile());
         mkBtn('Load Vase', () => loadVaseFromFile());
         mkBtn('Share', () => shareVase());
-        gifButton = mkBtn('Record GIF', () => startGifCapture());
 
         // Seed row (manual — not driven by paramsList, since the seed is its
         // own concept and we want a number-input instead of a slider).
@@ -797,9 +792,6 @@ function drawLoading()
 
 function getBorderSize()
 {
-    if (capturer)
-        return 0;
-
     const minBorderSize = .005;
     const maxBorderSize = .05;
     const borderSeed = getFXParamNumber('borderSeed');
@@ -869,9 +861,6 @@ function update(frameTimeMS=0)
         }
     }
 
-    if (debug && keyWasPressed('t'))
-        startGifCapture();
-
     let thisFrameMS = Date.now();
     let newFPS = 1e3/(thisFrameMS - lastFrameMS);
     fps = newFPS?fps*.95 + newFPS*.05:0;
@@ -902,39 +891,16 @@ function update(frameTimeMS=0)
         frameTimeBufferMS = 0;
     }
     // update multiple frames if necessary in case of slow framerate
-    if (capturer)
-        vase.update();
-    else
+    for (;frameTimeBufferMS >= 0; frameTimeBufferMS -= 1e3 / frameRate)
     {
-        for (;frameTimeBufferMS >= 0; frameTimeBufferMS -= 1e3 / frameRate)
-        {
-            time += 1/frameRate;
-            vase.update();
-        }
+        time += 1/frameRate;
+        vase.update();
     }
 
     // add the time smoothing back in
     frameTimeBufferMS += deltaSmooth;
 
     glRender();
-
-    if (capturer)
-    {
-        captureFrame++;
-        capturer.capture( glCanvas );
-        if (captureFrame > captureFrameCount)
-        {
-            capturer.stop();
-            capturer = 0;
-            setupCanvas();
-            displayMessage('Saved vaseLoop.gif');
-            if (gifButton)
-            {
-                gifButton.disabled = false;
-                gifButton.textContent = 'Record GIF';
-            }
-        }
-    }
 
     // standalone-only: nothing to emit to a host. Just clear the flag.
     if (needsEmit)
@@ -968,37 +934,6 @@ function displayMessage(message, time=3)
     testDisplayTimer = time;
 }
 
-// Record a looping GIF of the spinning vase via CCapture. Shrinks the canvas
-// to captureSize for the duration; update()/the capture-stop path restore it.
-function startGifCapture()
-{
-    if (capturer) return;                       // already recording
-    if (typeof CCapture == 'undefined')
-    {
-        displayMessage('GIF recorder not loaded');
-        return;
-    }
-    capturer = new CCapture({
-        framerate: 30,
-        format: 'gif',
-        quality: 1,            // gif.js: lower = better color quantization (default 10)
-        timeLimit: captureFrameCount/30,
-        workersPath: './',
-        name: 'vaseLoop',
-    });
-    capturer.start();
-    captureFrame = 0;
-    glCanvas.width = mainCanvas.width = captureSize/canvasAspect|0;
-    glCanvas.height = mainCanvas.height = captureSize;
-    displayMessage('Recording GIF...');
-
-    if (gifButton)
-    {
-        gifButton.disabled = true;
-        gifButton.textContent = 'Recording...';
-    }
-}
-
 function saveImage()
 {
     glRender();
@@ -1008,7 +943,6 @@ function saveImage()
 function updateUI()
 {
     // size message text relative to the canvas so it never runs off the edge
-    // (the capture canvas is only ~600px wide, where a fixed 50px overflowed).
     const msgSize = max(14, mainCanvas.width/26 | 0);
     mainContext.font = msgSize + 'px monospace';
     mainContext.textAlign = 'left';
@@ -1294,7 +1228,6 @@ function updateCamera()
     let cameraHeight = windowScene ? 3.5 : 3.25;
 
     let d = vec3(0,0,testMountains?0:-25).rotateXYZ(cameraRotation);
-    //if (!editMode||capturer)
     const radius = vase.getMaxRadius();
 
     cameraZoom = 5;
@@ -1325,7 +1258,6 @@ function updateCamera()
 
 let debugSpan;
 let seedInput;
-let gifButton;   // the Record GIF action button, disabled while recording
 const paramInputs = {};  // id -> input element, for refreshing UI on reset/randomize
 
 function setSeed(newSeed)
@@ -1448,7 +1380,9 @@ function randomizeAllParams()
     for (const p of paramsList)
     {
         if (p['id'] == 'vaseData') continue;
-        if (p['id'] == 'aspect') continue;   // user controls aspect manually
+        // Frame params (border seed, post effect, auto zoom, aspect) are the
+        // user's framing choices — randomize leaves them alone.
+        if (sectionForId[p['id']] == 'Frame') continue;
         setParamValue(p, computeRandom(p));
     }
     if (saveLoad)

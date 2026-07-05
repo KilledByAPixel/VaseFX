@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(git rm -q code/gif.js code/gif.worker.js code/CCapture.min.js code/download.js THIRD_PARTY_NOTICES.md)",
+      "PowerShell(git rm -q code/gif.js code/gif.worker.js code/download.js THIRD_PARTY_NOTICES.md)",
+      "PowerShell(Remove-Item -Force -Confirm:$false code/CCapture.min.js)",
+      "PowerShell(node --check code/game.js)",
+      "PowerShell(node --check code/scene.js)",
+      "PowerShell(node --check code/webgl.js)",
+      "PowerShell(node local/build.mjs)"
+    ]
+  }
+}
