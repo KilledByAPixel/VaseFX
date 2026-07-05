@@ -4,7 +4,7 @@ VaseFX is a browser-based vase sculpting tool by Frank Force.
 
 Sculpt, glaze, and render procedural pottery directly in your browser.
 
-# [Live Demo](killedbyapixel.github.io/VaseFX/)
+# [Live Demo](https://killedbyapixel.github.io/VaseFX/)
 
 ![Screenshot](screenshot.jpg)
 
