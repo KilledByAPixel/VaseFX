@@ -436,7 +436,7 @@ function glRender()
     {
         lightDirection = vec3(0,0,-1).rotateX(lightRandom.float(.5,1.1));
         let newLightAngle = lightRandom.floatSign(1.2);
-        if (abs(lightAngle-newLightAngle) < .5);
+        if (abs(lightAngle-newLightAngle) < .5)
             newLightAngle -= sign(lightAngle-newLightAngle)*.5;
         //lightDirection = vec3(0,0,-1).rotateX(1.1);newLightAngle = -1;
         newLightAngle = clamp(newLightAngle,-1,1);

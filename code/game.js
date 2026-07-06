@@ -49,6 +49,8 @@ const debugParams = 1
 const debugNoDefaults = 0
 const saveLoad = 1;
 const panelWidth = 320;
+let panelVisible = 1; // panel starts collapsed on narrow (mobile) screens
+const panelOverlays =()=> innerWidth < 700; // narrow screens: panel overlays the canvas
 const showInfo = 0;
 const testPole = 0;
 const testMountains = 0;
@@ -302,12 +304,43 @@ function initParams()
             }
             #vasePanel .row:hover .reset-one { opacity: 1; }
             #vasePanel .reset-one:hover { color: #fff; border-color: #555; }
+            #vasePanel .footer {
+                margin-top: 24px; padding-top: 12px;
+                border-top: 1px solid #2a2a30;
+                color: #666; font-size: 11px; line-height: 1.6;
+                text-align: center;
+            }
+            #vasePanel .footer a { color: #999; text-decoration: none; }
+            #vasePanel .footer a:hover { color: #fff; }
+            #vasePanelToggle {
+                position: fixed; top: 10px; right: 10px; z-index: 101;
+                width: 36px; height: 36px;
+                background: rgba(15,15,18,.85); color: #ddd;
+                border: 1px solid #3a3a45; border-radius: 4px;
+                font-size: 16px; line-height: 1; cursor: pointer;
+            }
+            #vasePanelToggle:hover { background: #2a2a32; border-color: #555; }
         `;
         document.head.appendChild(panelStyle);
 
         debugSpan = document.createElement('div');
         debugSpan.id = 'vasePanel';
         document.body.appendChild(debugSpan);
+
+        // panel starts hidden on narrow screens, with a toggle to bring it up
+        panelVisible = !panelOverlays();
+        debugSpan.style.display = panelVisible ? '' : 'none';
+        const panelToggle = document.createElement('button');
+        panelToggle.id = 'vasePanelToggle';
+        panelToggle.textContent = '☰';
+        panelToggle.title = 'Toggle panel';
+        panelToggle.onclick = ()=>
+        {
+            panelVisible = !panelVisible;
+            debugSpan.style.display = panelVisible ? '' : 'none';
+            setupCanvas();
+        };
+        document.body.appendChild(panelToggle);
 
         // panel header + action buttons
         const titleEl = document.createElement('div');
@@ -537,6 +570,19 @@ function initParams()
     // build debug UI from resolved values
     for (const p of paramsList)
         addDebugParam(p['id'], p['name'], p['type'], p['options'], p['default'], p['update']);
+
+    if (debugParams)
+    {
+        // about/credits footer at the bottom of the panel
+        const footer = document.createElement('div');
+        footer.className = 'footer';
+        footer.innerHTML =
+            `VaseFX v${version} &copy; 2024 Frank Force<br>` +
+            `<a href="https://github.com/KilledByAPixel/VaseFX" target="_blank">GitHub</a> &middot; ` +
+            `<a href="https://frankforce.com" target="_blank">frankforce.com</a> &middot; ` +
+            `<a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GPL-3.0</a>`;
+        debugSpan.appendChild(footer);
+    }
 }
 
 // local param store
@@ -590,7 +636,8 @@ function setupCanvas()
     currentAspectMode = getFXParam('aspect') || 'Full';
 
     // available area = window minus the right-side panel
-    const panelOffset = debugParams ? panelWidth : 0;
+    // (on narrow screens the panel overlays instead of reserving space)
+    const panelOffset = debugParams && panelVisible && !panelOverlays() ? panelWidth : 0;
     const availW = max(1, innerWidth - panelOffset);
     const availH = innerHeight;
 
@@ -812,7 +859,7 @@ let wasBuilt = 0;
 const frameRate = 60;
 function update(frameTimeMS=0)
 {
-    if (!glShaderProgram || !glPixelShader || !glShaderProgram)
+    if (!glShaderProgram || !glPixelShader || !glVertexShader)
     {
         failMessage();
         return false;

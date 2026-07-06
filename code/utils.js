@@ -298,9 +298,10 @@ const downloadLink = document.createElement('a');
 function saveCanvas(canvas, filename = 'shortray', savePng = 0)
 {
     const saveType = savePng ? 'png' : 'jpg';
+    const mimeType = savePng ? 'image/png' : 'image/jpeg';
     downloadLink.download = filename + '.' + saveType;
-    downloadLink.href = canvas.toDataURL('image/'+saveType)
-        .replace('image/' + saveType,'image/octet-stream');
+    downloadLink.href = canvas.toDataURL(mimeType)
+        .replace(mimeType,'image/octet-stream');
     downloadLink.click();
     console.log('Saved image ' + filename);
 }

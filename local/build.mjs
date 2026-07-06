@@ -20,7 +20,7 @@ const sourceFiles = [
     join(ROOT, 'code', 'game.js'),
 ];
 
-const htmlPrefix = `<html>\n<head>\n  <title>VaseFX</title>\n  <meta charset="utf-8" />\n</head>\n\n<body bgcolor="#000">\n<canvas id=glCanvas></canvas>\n<canvas id=mainCanvas></canvas>\n<script>`;
+const htmlPrefix = `<!DOCTYPE html>\n<html>\n<head>\n  <title>VaseFX</title>\n  <meta charset="utf-8" />\n  <meta name="viewport" content="width=device-width, initial-scale=1" />\n  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏺</text></svg>" />\n</head>\n\n<body bgcolor="#000">\n<canvas id=glCanvas></canvas>\n<canvas id=mainCanvas></canvas>\n<script>`;
 const htmlSuffix = `</script>\n</body>\n</html>\n`;
 
 console.log('Building VaseFX...');

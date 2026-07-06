@@ -40,6 +40,12 @@ Sculpting controls (edit mode):
 
 ![Examples](examples.gif)
 
+## How It Works
+
+Everything you see is drawn by a single WebGL fragment shader that raymarches a signed distance field — there is no polygon mesh. The vase itself is just a profile curve: 256 radius and smoothness values that are packed into a small data texture and revolved around the vertical axis by the shader. Sculpting simply edits that profile, which is also why undo history, saved vases, and share URLs stay so compact.
+
+The glazes and scenes are procedural too. Layers of seeded noise drive the glaze patterns (marble, spirals, iridescence, and more), blending between two colors — optionally through HSL space for richer gradients — while the surface is lit by an ambient term and two randomized directional lights with soft raymarched shadows. Every random choice flows from a seeded random number generator, so the same seed and parameters always reproduce the same vase, which is what makes the share links work.
+
 ## License
 
 VaseFX is released under the [GPL-3.0 License](LICENSE).

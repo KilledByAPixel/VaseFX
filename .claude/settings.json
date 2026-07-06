@@ -11,7 +11,17 @@
       "PowerShell(node --check code/input.js)",
       "PowerShell(node --check code/utils.js)",
       "PowerShell(node --check code/shader.js)",
-      "PowerShell(npm run build)"
+      "PowerShell(npm run build)",
+      "PowerShell(node \"C:\\\\Users\\\\frank\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--dev-GitHub-VaseFX\\\\5ffd16e6-a591-481e-aca5-15d15783c64f\\\\scratchpad\\\\serve.js\")",
+      "Read(//c/Program Files/Google/Chrome/Application/**)",
+      "PowerShell(& \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\" --headless=new --disable-gpu --window-size=1400,900 --virtual-time-budget=15000 --screenshot=\"C:\\\\Users\\\\frank\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--dev-GitHub-VaseFX\\\\5ffd16e6-a591-481e-aca5-15d15783c64f\\\\scratchpad\\\\desktop.png\" http://localhost:8377/)",
+      "PowerShell(& \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\" --headless=new --disable-gpu --window-size=390,844 --virtual-time-budget=15000 --screenshot=\"C:\\\\Users\\\\frank\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--dev-GitHub-VaseFX\\\\5ffd16e6-a591-481e-aca5-15d15783c64f\\\\scratchpad\\\\mobile.png\" http://localhost:8377/)",
+      "PowerShell(& \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\" --headless=new --disable-gpu --window-size=390,844 --virtual-time-budget=8000 --dump-dom http://localhost:8377/ > \"C:\\\\Users\\\\frank\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--dev-GitHub-VaseFX\\\\5ffd16e6-a591-481e-aca5-15d15783c64f\\\\scratchpad\\\\mobile-dom.html\")",
+      "Bash(SCRATCH=\"/c/Users/frank/AppData/Local/Temp/claude/c--dev-GitHub-VaseFX/5ffd16e6-a591-481e-aca5-15d15783c64f/scratchpad\"; \"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --window-size=390,844 --virtual-time-budget=8000 --dump-dom http://localhost:8377/ > \"$SCRATCH/mobile-dom.html\" 2>/dev/null; wc -c < \"$SCRATCH/mobile-dom.html\")",
+      "PowerShell(try { Get-NetTCPConnection -LocalPort 8377 -State Listen -ErrorAction Stop | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -Confirm:$false } } catch {})"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\frank\\AppData\\Local\\Temp\\claude\\c--dev-GitHub-VaseFX\\5ffd16e6-a591-481e-aca5-15d15783c64f\\scratchpad"
     ]
   }
 }

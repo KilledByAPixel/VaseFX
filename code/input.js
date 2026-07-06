@@ -24,8 +24,17 @@ function updateInputPost()
 const keyIsDown = (key)=> inputDataDown[key] === 1;
 const keyWasPressed = (key)=> inputDataPressed[key] === 1;
 
+// typing in a panel input must not trigger app shortcuts
+const isFormInput = (element)=>
+    element && element.matches && element.matches('input, select, textarea');
+
 window.addEventListener('keydown', function(e)
 {
+    // ignore keys while typing in panel inputs,
+    // and let browser shortcuts (ctrl/cmd combos) through untouched
+    if (isFormInput(e.target) || e.ctrlKey || e.metaKey)
+        return;
+
     if (e.altKey)
         altKeyDown = 1;
 
@@ -54,8 +63,11 @@ window.addEventListener('keyup', function(e)
     if (key.length == 1)
         key = key.toLowerCase();
     inputDataDown[key] = 0;
-    e.preventDefault();
-    e.stopPropagation();
+    if (!isFormInput(e.target) && !e.ctrlKey && !e.metaKey)
+    {
+        e.preventDefault();
+        e.stopPropagation();
+    }
 }, { passive: false });
 
 onblur = (e)=>
@@ -162,6 +174,10 @@ if (isTouchDevice)
         // handle all touch events the same way
         ontouchstart = ontouchmove = ontouchend = (e)=>
         {
+            // let panel controls receive native touch/click events
+            if (e.target && e.target.closest && e.target.closest('#vasePanel, #vasePanelToggle'))
+                return;
+
             e.button = 0; // all touches are left click
 
             // check if touching and pass to mouse events
