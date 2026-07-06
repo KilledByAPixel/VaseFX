@@ -46,7 +46,9 @@ const shaderCode =
 // always 0, but the compiler can't prove it - putting this in loop bounds
 // stops drivers from unrolling the big marching loops, which cuts shader
 // compile time drastically (especially on Windows where WebGL uses Direct3D)
-#define ZERO (min(iFrame,0))
+// set to plain 0 to allow full unrolling (slower compile, test for fps impact)
+#define ZERO 0
+//#define ZERO (min(iFrame,0))
 
 // VaseFX Raymarching Engine
 // Copyright Frank Force 2023
@@ -224,8 +226,10 @@ vec3 noise3(vec3 p)
     vec3 f = fract(p);
     f = f*f*(3.-2.*f);
 
+    // always unrolled: a dynamic loop index here would force hashResult
+    // out of registers into scratch memory, and this is the hot path
     vec3 hashResult[8];
-    for(int j=ZERO; j<8; ++j)
+    for(int j=0; j<8; ++j)
         hashResult[j] = hash(i+vec3(j&1,(j&2)>>1,(j&4)>>2));
     
     return mix(
