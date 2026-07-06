@@ -53,6 +53,7 @@ function isShaderReady(context)
 const getWebGLAsync = context => context && context.getExtension && context.getExtension('KHR_parallel_shader_compile');
 
 let shaderBuildTime;
+let glFrameCount = 0;
 
 let ambientScale = 1, light1Scale = 1, light2Scale = 1;
 
@@ -143,6 +144,7 @@ function glInit()
         'uniform vec4 cameraRotation;\n' +
         'uniform vec4 iResolution;\n' +
         'uniform float iTime;\n' +
+        'uniform int iFrame;\n' +
         'uniform vec4 iMouse;\n' +
         `uniform sampler2D iChannel0;`+
         'out vec4 outColor;\n' +
@@ -223,6 +225,7 @@ function glRender()
     const U = (name) => context.getUniformLocation(glShaderProgram, name);
     setUniform4f('iResolution', glCanvas.width, glCanvas.height, 1, 1);
     setUniform1f('iTime', time);
+    setUniform1i('iFrame', glFrameCount++);
     setUniform4f('iMouse', mousePos.x, mousePos.y, mouseMove.x, mouseMove.y);
     setUniform1i('iChannel0', 0);
 

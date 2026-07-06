@@ -43,6 +43,11 @@ const shaderCode =
 #define materialSeed (materialEffects.z)
 #define quickTest false
 
+// always 0, but the compiler can't prove it - putting this in loop bounds
+// stops drivers from unrolling the big marching loops, which cuts shader
+// compile time drastically (especially on Windows where WebGL uses Direct3D)
+#define ZERO (min(iFrame,0))
+
 // VaseFX Raymarching Engine
 // Copyright Frank Force 2023
 // www.frankforce.com
@@ -220,7 +225,7 @@ vec3 noise3(vec3 p)
     f = f*f*(3.-2.*f);
 
     vec3 hashResult[8];
-    for(int j=0; j<8; ++j)
+    for(int j=ZERO; j<8; ++j)
         hashResult[j] = hash(i+vec3(j&1,(j&2)>>1,(j&4)>>2));
     
     return mix(
@@ -247,7 +252,7 @@ vec3 fractalNoise3(vec3 p, int octaves)
     // amplitude sum, which is the most common octave count here).
     vec3 t = vec3(0);
     float a = 1.;
-    for (int i = octaves; --i >= 0;)
+    for (int i = octaves + ZERO; --i >= 0;)
     {
         t += a * noise3(p);
         a *= .5;
@@ -265,7 +270,7 @@ vec2 raycast(vec3 position, vec3 direction)
     float total = minRange;
     float nearestDistance = 1e9;
     vec2 nearestResult = vec2(1e4);
-    for (int i = maxRaycastIterations; --i > 0;)
+    for (int i = maxRaycastIterations + ZERO; --i > 0;)
     {
         vec2 distanceResult = sceneDistance(position + total * direction, true, direction);
         total += distanceResult.x*raycastScale;
@@ -293,7 +298,7 @@ float getShadow(vec3 position, vec3 direction, float softness, float range, bool
     float distanceLast = 1e9;
     float shadow = 1.;
     float total = minRange;
-    int iterations = occlusion ? 10 : ambient ? maxAmbientShadowIterations : maxShadowIterations;
+    int iterations = (occlusion ? 10 : ambient ? maxAmbientShadowIterations : maxShadowIterations) + ZERO;
 
     float minMove = 1e9;
     if (occlusion)
@@ -394,7 +399,7 @@ float combineSubtractSmooth(float d1, float d2, float k)
 vec3 getNormal(vec3 p, vec3 direction)
 {
     vec3 t = vec3(0);
-    for(int j=0;j<4;++j)
+    for(int j=ZERO;j<4;++j)
     {
         vec3 e = raycastAccuracy*(j==3?vec3(1):vec3(j==0?1:-1,j==1?1:-1,j==2?1:-1));
         t += e*sceneDistance(p+e, true, direction).x;
@@ -1109,7 +1114,7 @@ vec3 getColor(vec3 startPosition, vec3 direction)
         // roughness
         vec3 roughNoise = vec3(0);
         float f = 1., o=0.;
-        for(int i = 0; i < 3; ++i)
+        for(int i = ZERO; i < 3; ++i)
         {
             roughNoise += fractalNoise3(o + f*roughTexturePosition * roughnessScale, 3);
             f -= .137;
@@ -1124,7 +1129,7 @@ vec3 getColor(vec3 startPosition, vec3 direction)
     vec3 color = emissive;
     vec3 lightReflect = reflect(direction, normal);
     vec3 lightReflectColor = getFogColor(lightReflect);
-    for(int i = 0; i < 4; ++i)
+    for(int i = ZERO; i < 4; ++i)
     {
         vec3 lightColor = vec3(0);
         vec3 lightDirection = vec3(0);
