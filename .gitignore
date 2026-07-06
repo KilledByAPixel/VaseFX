@@ -5,3 +5,4 @@ local/
 *.min.js
 *.min.html
 npm-debug.log*
+package-lock.json
