@@ -2,11 +2,10 @@
 
 VaseFX by Frank Force
 
+Sculpt, glaze, and render procedural pottery in your browser.
 
-video
 
-
-Standalone Controls
+General Controls
 
 Mouse or touch to control view
 1 - Save Image
@@ -16,13 +15,13 @@ Mouse or touch to control view
 5 - Toggle Animate
 
 
-Minting Controls
+Sculpting Controls
 
 Mouse click - Sculpt
 Drag bottom - Rotate
 Wheel - Tilt camera
-X/Z - Undo/Redo
-Control - Tight sculpt
+Z/X - Undo/Redo
+Alt or Middle click - Detail sculpt
 Shift - Soft sculpt
 WASD - Control View
 Space - Stop Spin
@@ -34,24 +33,8 @@ Tips for best results...
 Keep the vase warp slider low until you finish sculpting
 Rotate and tilt your vase to be in the final display position
 Use the undo/redo buttons to help sculpt
-There is an auto sculpt button 'G' to generate a random shape
-Zoom will attempt to zoom in or out to get the best view
-Click refresh before minting to ensure all params are up to date
-
-
-tags
-vase, pottery, sculpt, webgl, 3d, interactive, raymarching
-
-
-Sculpt, glaze, and fire.
-
-improve border color
-write description of each param
-twist?
-
-
-try always emit
-
+Press 'G' to generate a random shape
+Auto zoom will attempt to zoom in or out to get the best view
 
 */
 
@@ -166,29 +149,26 @@ const backgroundTypeNames =
 
 const aspectModeNames = ['Full', 'Square', 'Vertical'];
 let currentAspectMode = 'Full';
-const programInfo = 
+const programInfo =
 `VaseFX by Frank Force
-
-- TOP SECRET DEMO -
-PLEASE DO NOT SHARE!
 
 - Controls -
 Mouse click - Sculpt
 Mouse drag bottom - Rotate
 Mouse Wheel - Tilt camera
-X/Z - Undo/Redo
+Z/X - Undo/Redo
 Shift - Soft sculpt
 Alt or Middle click - Detail sculpt
 WASD - Control View
 Space - Stop Spin
 R - Reset
+G - Generate Random
 
 1 - Save HD Image
-2 - Toggle Edit Mode
-3 - Toggle Free Cam
-4 - Toggle Frame
-5 - Randomize Shape
-6 - Animate
+2 - Toggle Free Cam
+3 - Toggle Frame
+4 - Toggle Edit Mode
+5 - Toggle Animate
 
 For best results...
 Chrome browser

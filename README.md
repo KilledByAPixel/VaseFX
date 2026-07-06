@@ -4,6 +4,8 @@ VaseFX is a browser-based vase sculpting tool by Frank Force.
 
 Sculpt, glaze, and render procedural pottery directly in your browser.
 
+Originally released on [fxhash in 2024](https://www.fxhash.xyz/project/fxvase), it has since been reworked for this open source release.
+
 # [Live Demo](https://killedbyapixel.github.io/VaseFX/)
 
 ![Screenshot](screenshot.jpg)
@@ -23,13 +25,13 @@ Sculpt, glaze, and render procedural pottery directly in your browser.
 - 4: toggle edit mode
 - 5: toggle animate
 
-Minting/sculpting controls from the source:
+Sculpting controls (edit mode):
 
 - Mouse click: sculpt
 - Drag bottom: rotate
 - Mouse wheel: tilt camera
-- X / Z: undo / redo
-- Ctrl: tight sculpt
+- Z / X: undo / redo
+- Alt or middle click: detail sculpt
 - Shift: soft sculpt
 - WASD: control view
 - Space: stop spin
@@ -37,3 +39,7 @@ Minting/sculpting controls from the source:
 - G: generate random
 
 ![Examples](examples.gif)
+
+## License
+
+VaseFX is released under the [GPL-3.0 License](LICENSE).

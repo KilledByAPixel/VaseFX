@@ -7,7 +7,11 @@
       "PowerShell(node --check code/game.js)",
       "PowerShell(node --check code/scene.js)",
       "PowerShell(node --check code/webgl.js)",
-      "PowerShell(node local/build.mjs)"
+      "PowerShell(node local/build.mjs)",
+      "PowerShell(node --check code/input.js)",
+      "PowerShell(node --check code/utils.js)",
+      "PowerShell(node --check code/shader.js)",
+      "PowerShell(npm run build)"
     ]
   }
 }
