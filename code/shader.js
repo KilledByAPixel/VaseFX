@@ -50,6 +50,10 @@ const shaderCode =
 #define ZERO 0
 //#define ZERO (min(iFrame,0))
 
+// 1 = sample noise from a repeating 3d texture (one trilinear fetch),
+// 0 = original procedural value noise (8 hashes + trilinear mix in alu)
+#define USE_NOISE_TEXTURE 1
+
 // VaseFX Raymarching Engine
 // Copyright Frank Force 2023
 // www.frankforce.com
@@ -222,16 +226,25 @@ void mainImage(out vec4 fragColor, vec2 fragCoord)
 // fast build noise, prevent inlining calls to hash
 vec3 noise3(vec3 p)
 {
-    vec3 i = floor(p) + 99.;
     vec3 f = fract(p);
-    f = f*f*(3.-2.*f);
+    f = f*f*(3.-2.*f); // smooth the blend like classic value noise
+
+#if USE_NOISE_TEXTURE
+
+    // single hardware trilinear fetch from the repeating 3d noise texture,
+    // smoothstep is baked into the sample coordinate
+    return texture(iChannel1, (floor(p) + f + .5)/noiseTextureSize).xyz;
+
+#else
+
+    vec3 i = floor(p) + 99.;
 
     // always unrolled: a dynamic loop index here would force hashResult
     // out of registers into scratch memory, and this is the hot path
     vec3 hashResult[8];
     for(int j=0; j<8; ++j)
         hashResult[j] = hash(i+vec3(j&1,(j&2)>>1,(j&4)>>2));
-    
+
     return mix(
         mix
         (
@@ -247,6 +260,8 @@ vec3 noise3(vec3 p)
         ),
         f.z
     );
+
+#endif
 }
 
 vec3 fractalNoise3(vec3 p, int octaves)

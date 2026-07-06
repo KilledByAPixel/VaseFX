@@ -3,6 +3,10 @@
 let glContext;
 let glVertexShader, glPixelShader, glShaderProgram;
 let textureSceneData, canvas_sceneData;
+let textureNoise;
+
+// size of the repeating 3d noise texture that replaces procedural noise
+const noiseTextureSize = 64;
 
 let shaderReady = false;
 function isShaderReady(context)
@@ -115,6 +119,7 @@ function glInit()
         `#define vaseMaxHeight (${shaderFloat(vaseMaxHeight)})\n` +
         `#define vaseMaxRadius (${shaderFloat(vaseMaxRadius)})\n` +
         `#define testMountains (${!!testMountains})\n` +
+        `#define noiseTextureSize (${shaderFloat(noiseTextureSize)})\n` +
         //`uniform vec4 objectData[objectDataCount];\n` +
         'uniform vec4 vaseColor1;\n' +
         'uniform vec4 vaseColor2;\n' +
@@ -147,6 +152,7 @@ function glInit()
         'uniform int iFrame;\n' +
         'uniform vec4 iMouse;\n' +
         `uniform sampler2D iChannel0;`+
+        'uniform highp sampler3D iChannel1;\n' +
         'out vec4 outColor;\n' +
         shaderCode + '\n' +
         'void main(){mainImage(outColor,gl_FragCoord.xy);outColor.a=1.;}'
@@ -167,6 +173,22 @@ function glInit()
     context.texParameteri(context.TEXTURE_2D, context.TEXTURE_MAG_FILTER, context.LINEAR);
     context.texParameteri(context.TEXTURE_2D, context.TEXTURE_WRAP_S, context.CLAMP_TO_EDGE);
     context.texParameteri(context.TEXTURE_2D, context.TEXTURE_WRAP_T, context.CLAMP_TO_EDGE);
+
+    // 3d noise texture - one hardware trilinear fetch replaces the 8 hashes
+    // of procedural value noise. fixed seed keeps vases deterministic.
+    const noiseRandom = new Random(1234567);
+    const noiseData = new Uint8Array(noiseTextureSize**3 * 4);
+    for (let i = 0; i < noiseData.length; ++i)
+        noiseData[i] = noiseRandom.float(256);
+    context.activeTexture(context.TEXTURE1);
+    textureNoise = context.createTexture();
+    context.bindTexture(context.TEXTURE_3D, textureNoise);
+    context.texImage3D(context.TEXTURE_3D, 0, context.RGBA8,
+        noiseTextureSize, noiseTextureSize, noiseTextureSize, 0,
+        context.RGBA, context.UNSIGNED_BYTE, noiseData);
+    context.texParameteri(context.TEXTURE_3D, context.TEXTURE_MIN_FILTER, context.LINEAR);
+    context.texParameteri(context.TEXTURE_3D, context.TEXTURE_MAG_FILTER, context.LINEAR);
+    // wrap mode defaults to REPEAT so the noise tiles seamlessly
 }
 
 function glUpdateDataTexture()
@@ -228,6 +250,7 @@ function glRender()
     setUniform1i('iFrame', glFrameCount++);
     setUniform4f('iMouse', mousePos.x, mousePos.y, mouseMove.x, mouseMove.y);
     setUniform1i('iChannel0', 0);
+    setUniform1i('iChannel1', 1);
 
     // camera   
     setUniform4f('cameraPosition', ...cameraPosition.getArray(),cameraZoom);

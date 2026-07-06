@@ -81,7 +81,7 @@ let canvasSize = 800;
 // the gl canvas renders at this fraction of the display size and is
 // stretched by css - big speedup since raymarch cost scales with pixels.
 // saved images always render at full resolution.
-let renderScale = .7;
+let renderScale = 1;
 
 let isSculpting;
 let needsEmit;
