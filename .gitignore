@@ -1,5 +1,6 @@
 node_modules/
 build/
+local/
 *.min.js
 *.min.html
 npm-debug.log*
