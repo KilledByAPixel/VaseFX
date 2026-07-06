@@ -1,6 +1,7 @@
 node_modules/
 build/
 local/
+.claude/
 *.min.js
 *.min.html
 npm-debug.log*
