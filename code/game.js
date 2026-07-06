@@ -78,6 +78,11 @@ let sculptSize = 0;
 
 let canvasSize = 800;
 
+// the gl canvas renders at this fraction of the display size and is
+// stretched by css - big speedup since raymarch cost scales with pixels.
+// saved images always render at full resolution.
+let renderScale = .7;
+
 let isSculpting;
 let needsEmit;
 
@@ -189,7 +194,8 @@ function initURL()
         showBorder = !parseInt(searchParams.get('full'));
     if (searchParams.has('size'))
         canvasSize = parseInt(searchParams.get('size'));
-
+    if (searchParams.has('scale'))
+        renderScale = clamp(parseFloat(searchParams.get('scale')), .1, 1);
 }
 
 const paramsList = [];
@@ -352,14 +358,15 @@ function initParams()
         actions.className = 'actions';
         debugSpan.appendChild(actions);
 
-        const mkBtn = (label, onClick) => {
+        const mkBtn = (label, tip, onClick) => {
             const b = document.createElement('button');
             b.textContent = label;
+            b.title = tip;
             b.onclick = onClick;
             actions.appendChild(b);
             return b;
         };
-        mkBtn('Reset', () => {
+        mkBtn('Reset', 'Reset the vase and all settings to defaults', () => {
             if (!vase) return;
             if (!confirmDestructive('Reset your vase to the default shape?')) return;
             resetAllParams();
@@ -368,7 +375,7 @@ function initParams()
             isDirty = 0;
             needsEmit = 1;
         });
-        mkBtn('Randomize', () => {
+        mkBtn('Randomize', 'Generate a completely random vase', () => {
             if (!vase) return;
             if (!confirmDestructive('Replace your current vase with a random one?')) return;
             randomizeAllParams();
@@ -377,13 +384,13 @@ function initParams()
             isDirty = 0;
             needsEmit = 1;
         });
-        mkBtn('Save Image', () => {
+        mkBtn('Save Image', 'Render and download a high resolution image', () => {
             if (glShaderProgram)
                 saveImageMaxRes();
         });
-        mkBtn('Save Vase', () => saveVaseToFile());
-        mkBtn('Load Vase', () => loadVaseFromFile());
-        mkBtn('Share', () => shareVase());
+        mkBtn('Save Vase', 'Download this vase as a JSON file', () => saveVaseToFile());
+        mkBtn('Load Vase', 'Load a vase from a JSON file', () => loadVaseFromFile());
+        mkBtn('Share', 'Copy a shareable link to this exact vase', () => shareVase());
 
         // Seed row (manual — not driven by paramsList, since the seed is its
         // own concept and we want a number-input instead of a slider).
@@ -403,6 +410,7 @@ function initParams()
         seedInput.max = 1e7;
         seedInput.step = 1;
         seedInput.className = 'seed-input';
+        seedInput.title = 'Master seed driving all of the randomization';
         seedInput.oninput = () =>
         {
             const v = parseInt(seedInput.value);
@@ -659,10 +667,14 @@ function setupCanvas()
     }
 
     // Intrinsic resolution: fixed canvasSize so render quality is consistent.
+    // Only the gl canvas is scaled down; the 2d overlay stays full res so
+    // text and markers remain crisp.
     const w = (canvasSize / canvasAspect) | 0;
     const h = canvasSize | 0;
-    glCanvas.width = mainCanvas.width = w;
-    glCanvas.height = mainCanvas.height = h;
+    mainCanvas.width = w;
+    mainCanvas.height = h;
+    glCanvas.width = w * renderScale | 0;
+    glCanvas.height = h * renderScale | 0;
     glCanvas.style.width  = mainCanvas.style.width  = cssW + 'px';
     glCanvas.style.height = mainCanvas.style.height = cssH + 'px';
 
@@ -940,14 +952,11 @@ function update(frameTimeMS=0)
 
 function saveImageMaxRes()
 {
-    // save at max res
+    // save at max res, ignoring renderScale
     let w = glCanvas.width;
     let h = glCanvas.height;
-    if (showBorder)
-    {
-        glCanvas.width = 4096/ canvasAspect;
-        glCanvas.height = 4096;
-    }
+    glCanvas.width = 4096/ canvasAspect;
+    glCanvas.height = 4096;
     glRender();
     saveCanvas(glCanvas, 'vase');
     glCanvas.width = w;
@@ -1581,6 +1590,44 @@ const sectionForId = {
     backgroundColor1:'Scene', backgroundColor2:'Scene', sceneSeed:'Scene',
     borderSeed:'Frame', postEffect:'Frame', zoom:'Frame', aspect:'Frame',
 };
+
+// mouse-over tooltips for the panel controls
+const tipForId = {
+    materialType: 'Pattern used to blend the two glaze colors',
+    vaseColor1: 'Primary glaze color',
+    vaseColor2: 'Secondary glaze color',
+    materialBlendNoise: 'Random light and dark burn marks in the glaze',
+    materialEffectScale: 'Size of the glaze pattern',
+    materialNoise: 'How much noise distorts the glaze pattern',
+    materialScale: 'How fine or coarse the glaze noise is',
+    materialEffectContrast: 'Sharpness of the blend between glaze colors',
+    materialBias: 'Shifts the balance toward one glaze color',
+    materialShine: 'How glossy and reflective the glaze is',
+    materialRoughness: 'Surface finish, from ridged to rough',
+    materialSeed: 'Random seed for the glaze pattern',
+    hslBlend: 'Blend glaze colors by hue instead of RGB for more vivid mixes',
+    vaseTop: 'Fill the vase solid instead of hollowing it out',
+    vaseSymmetry: 'Number of ripples around the vase',
+    vaseSymmetryScale: 'Strength of the ripples around the vase',
+    vaseTopRoundness: 'Roundness of the rim opening',
+    vaseWarp: 'Warps the vase with lumpy clay noise',
+    handleCount: 'Number of handles, zero for none',
+    handlePosY: 'Vertical position of the handles',
+    handlePosX: 'How far handles are offset from the vase surface',
+    handlePosRadius1: 'Size of the handle loop',
+    handlePosRadius2: 'Thickness of the handles',
+    handleAngle: 'Rotation of the handles around the vase',
+    sceneType: 'What the vase is displayed on',
+    backgroundType: 'Backdrop style behind the vase',
+    sceneColor: 'Color of the table or floor',
+    backgroundColor1: 'First backdrop color',
+    backgroundColor2: 'Second backdrop color',
+    sceneSeed: 'Random seed for the lighting and background',
+    borderSeed: 'Random seed for the frame border',
+    postEffect: 'Image effect applied on top, like grain or vignette',
+    zoom: 'Automatically frame the camera to fit the vase',
+    aspect: 'Canvas shape: full window, square, or vertical',
+};
 let lastSection;
 function persistParam(id)
 {
@@ -1617,6 +1664,8 @@ function addDebugParam(id, name, type, options, def, update)
 
     const row = document.createElement('div');
     row.className = 'row';
+    if (tipForId[id])
+        row.title = tipForId[id];
     const label = document.createElement('label');
     label.textContent = name;
     row.appendChild(label);
