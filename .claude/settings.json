@@ -20,7 +20,10 @@
       "Bash(SCRATCH=\"/c/Users/frank/AppData/Local/Temp/claude/c--dev-GitHub-VaseFX/5ffd16e6-a591-481e-aca5-15d15783c64f/scratchpad\"; \"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --window-size=390,844 --virtual-time-budget=8000 --dump-dom http://localhost:8377/ > \"$SCRATCH/mobile-dom.html\" 2>/dev/null; wc -c < \"$SCRATCH/mobile-dom.html\")",
       "PowerShell(try { Get-NetTCPConnection -LocalPort 8377 -State Listen -ErrorAction Stop | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -Confirm:$false } } catch {})",
       "PowerShell(node --check local/shadertoy-shader.js)",
-      "PowerShell($chrome = \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\"; if \\(-not \\(Test-Path $chrome\\)\\) { $chrome = \"C:\\\\Program Files \\(x86\\)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\" }; if \\(Test-Path $chrome\\) { Write-Output \"found: $chrome\" } else { Write-Output \"chrome not found\"; Get-Command msedge -ErrorAction SilentlyContinue })"
+      "PowerShell($chrome = \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\"; if \\(-not \\(Test-Path $chrome\\)\\) { $chrome = \"C:\\\\Program Files \\(x86\\)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\" }; if \\(Test-Path $chrome\\) { Write-Output \"found: $chrome\" } else { Write-Output \"chrome not found\"; Get-Command msedge -ErrorAction SilentlyContinue })",
+      "PowerShell(git rm -r --cached local)",
+      "PowerShell(git add .gitignore)",
+      "PowerShell(git push)"
     ],
     "additionalDirectories": [
       "C:\\Users\\frank\\AppData\\Local\\Temp\\claude\\c--dev-GitHub-VaseFX\\5ffd16e6-a591-481e-aca5-15d15783c64f\\scratchpad"
